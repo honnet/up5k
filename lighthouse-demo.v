@@ -6,54 +6,26 @@
 `include "lighthouse.v"
 
 module top(
-	output led_r,
-	output led_g,
-	output led_b,
-	output serial_txd,
-	input serial_rxd,
-	output spi_cs,
-	input gpio_9,
-	input gpio_18,
-	input gpio_28,
-	input gpio_38,
-	input gpio_2,
-	input gpio_46,
-	input gpio_47,
-	input gpio_45,
-	input gpio_48,
-	input gpio_3,
-	input gpio_4,
-	input gpio_44,
-	input gpio_6,
-	input gpio_42,
-	input gpio_36,
-	input gpio_34
+	input pin_1,  input pin_2,  input pin_3,  input pin_4,
+	input pin_5,  input pin_6,  input pin_7,  input pin_8,
+
+	input  pin_14, // serial_rxd,
+	output pin_15, // serial_txd,
+
+	output pin_led
 );
-	assign spi_cs = 1; // it is necessary to turn off the SPI flash chip
+
+	wire serial_rxd = pin_14;
+	wire serial_txd = pin_15;
+
+    // drive USB pull-up resistor to '0' to disable USB
+    assign pin_pu = 0;
 
 	// map the sensor
 	parameter NUM_SENSORS = 16;
 	wire [15:0] lighthouse_pin = {
-		gpio_48,
-		gpio_3,
-		gpio_4,
-		gpio_44,
-
-		gpio_6,
-		gpio_42,
-		gpio_34,
-		gpio_36,
-
-		gpio_2,
-		gpio_46,
-		gpio_47,
-		gpio_45,
-
-		// really hooked up
-		gpio_28,
-		gpio_18,
-		gpio_38,
-		gpio_9
+        pin_1,  pin_2,  pin_3,  pin_4,
+        pin_5,  pin_6,  pin_7,  pin_8
 	};
 
 	wire clk_48;
@@ -71,10 +43,10 @@ module top(
 		counter <= counter + 1;
 	wire pwm_g;
 	pwm pwm_g_driver(clk_48, 1, pwm_g);
-	assign led_g = !(counter[25:23] == 0 && pwm_g);
+	assign pin_led = !(counter[25:23] == 0 && pwm_g);
 */
 
-	assign led_b = serial_rxd; // idles high
+	assign pin_led = serial_rxd && serial_txd;  // TODO: test
 
 	// generate a 3 MHz/12 MHz serial clock from the 48 MHz clock
 	// this is the 3 Mb/s maximum supported by the FTDI chip
@@ -93,8 +65,6 @@ module top(
 		.data(uart_rxd),
 		.data_strobe(uart_rxd_strobe)
 	);
-
-	assign led_r = serial_txd;
 
 	reg [7:0] uart_txd;
 	reg uart_txd_strobe = 0;

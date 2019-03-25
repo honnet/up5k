@@ -41,7 +41,7 @@ module lighthouse_sensor(
 	output data_strobe,
 	output data
 );
-	parameter SENSORS = 1;
+	parameter SENSORS = 8;
 	parameter SENSOR_BITS = `CLOG2(SENSORS);
 	parameter WIDTH = 20;
 	parameter MHZ = 48;
@@ -79,7 +79,7 @@ module lighthouse_sensor(
 			.clk(clk),
 			.reset(reset),
 			.raw_pin(raw_pins[x]),
-			.rise_strobe(rise_strobe[x]), 
+			.rise_strobe(rise_strobe[x]),
 			.fall_strobe(fall_strobe[x])
 		);
 

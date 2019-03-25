@@ -11,7 +11,7 @@ FOOTPRINT-tomu := uwg30
 PIN_SRC-tomu := tomu.pcf
 
 USB_DEV ?= 1-1:1.0
-BOARD ?= upduino
+BOARD ?= tinyfpga
 DEVICE := $(DEVICE-$(BOARD))
 FOOTPRINT := $(FOOTPRINT-$(BOARD))
 PIN_SRC := $(PIN_SRC-$(BOARD))
